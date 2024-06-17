@@ -2678,7 +2678,7 @@ class SilverkiteForecast():
             fut_df_expanded.loc[:, fut_df_expanded.columns != time_col] = na_fill_func(
                 fut_df_expanded.loc[:, fut_df_expanded.columns != time_col])
             # Turn 'bool' columns from dtype object to bool
-            bool_col_names = [col for col in fut_df_expanded.columns if 'bool' in col]
+            bool_col_names = [col for col in fut_df_expanded.columns if '_bool' in col]
             fut_df_expanded[bool_col_names] = fut_df_expanded[bool_col_names].astype(bool)
             index = (
                     [False] * fut_df_within_training.shape[0] +

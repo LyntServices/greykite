@@ -4221,7 +4221,7 @@ def test_build_silverkite_features():
     daily_event_df_dict = get_holidays(["US"], year_start=2015, year_end=2025)
 
     # simple test
-    with pytest.warns(None) as record:
+    with warnings.catch_warnings(record=True) as record:
         df = generate_df_for_tests(
             freq="D",
             periods=20)

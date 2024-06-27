@@ -978,7 +978,7 @@ def flexible_grouping_evaluation(
             # Ignores pandas FutureWarning. Use NamedAgg in pandas 0.25.+
             warnings.filterwarnings(
                 "ignore",
-                message="using a dict with renaming is deprecated",
+                message="the provided callable will be used directly",
                 category=FutureWarning)
             df_transformed = groups.agg(**agg_kwargs)
         if extend_col_names is not None and df_transformed.columns.nlevels > 1:

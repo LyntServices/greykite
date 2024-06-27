@@ -705,7 +705,7 @@ def test_flexible_grouping_evaluation():
             "nanquantile",
             "nanquantile"]
         assert "Column names are not unique. Use `extend_col_names=True` " \
-               "to uniquely identify every column." in record[0].message.args[0]
+               "to uniquely identify every column." in record[-1].message.args[0]
 
     # same result with multilevel index
     eval_df = flexible_grouping_evaluation(

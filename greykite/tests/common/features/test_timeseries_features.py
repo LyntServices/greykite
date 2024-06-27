@@ -327,7 +327,7 @@ def test_build_time_features_df():
         92, 92,
         90, 90,
         91, 92,
-    ], dtype=int), check_names=False)
+    ], dtype='int64'), check_names=False)
     assert_equal(time_df["doq"], pd.Series([
         1, 91,
         1, 91,

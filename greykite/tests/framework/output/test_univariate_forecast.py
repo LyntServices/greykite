@@ -752,7 +752,7 @@ def test_plot_components(expected_component_names):
     with pytest.warns(Warning) as record:
         trained_model.fit(X, X[cst.VALUE_COL])
         assert "Zero degrees of freedom" in record[0].message.args[0]
-        assert "No slice had sufficient sample size" in record[1].message.args[0]
+        assert "No slice had sufficient sample size" in record[2].message.args[0]
     forecast = get_forecast(X, trained_model)
 
     # Tests plot_components

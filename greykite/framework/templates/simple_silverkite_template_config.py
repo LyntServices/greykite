@@ -1164,27 +1164,27 @@ class SimpleSilverkiteTemplateConstants:
         - Values correspond to a list of
           `~greykite.framework.templates.autogen.forecast_config.ModelComponentsParam`.
     """
-    SILVERKITE: SINGLE_MODEL_TEMPLATE_TYPE = SILVERKITE
+    SILVERKITE: SINGLE_MODEL_TEMPLATE_TYPE = mutable_field(SILVERKITE)
     """Defines the ``"SILVERKITE"`` template. Contains automatic growth,
     seasonality, holidays, autoregression and interactions.
     Uses "zero_to_one" normalization method.
     Best for hourly and daily frequencies. Uses `SimpleSilverkiteEstimator`.
     """
-    SILVERKITE_MONTHLY: SINGLE_MODEL_TEMPLATE_TYPE = SILVERKITE_MONTHLY
+    SILVERKITE_MONTHLY: SINGLE_MODEL_TEMPLATE_TYPE = mutable_field(SILVERKITE_MONTHLY)
     """Defines the ``SILVERKITE_MONTHLY`` template.
     Best for monthly forecasts. Uses `SimpleSilverkiteEstimator`.
     """
-    SILVERKITE_DAILY_1_CONFIG_1: SINGLE_MODEL_TEMPLATE_TYPE = SILVERKITE_DAILY_1_CONFIG_1
+    SILVERKITE_DAILY_1_CONFIG_1: SINGLE_MODEL_TEMPLATE_TYPE = mutable_field(SILVERKITE_DAILY_1_CONFIG_1)
     """Config 1 in template ``SILVERKITE_DAILY_1``.
     Compared to ``SILVERKITE``, it adds change points and uses parameters
     specifically tuned for daily data and 1-day forecast.
     """
-    SILVERKITE_DAILY_1_CONFIG_2: SINGLE_MODEL_TEMPLATE_TYPE = SILVERKITE_DAILY_1_CONFIG_2
+    SILVERKITE_DAILY_1_CONFIG_2: SINGLE_MODEL_TEMPLATE_TYPE = mutable_field(SILVERKITE_DAILY_1_CONFIG_2)
     """Config 2 in template ``SILVERKITE_DAILY_1``.
     Compared to ``SILVERKITE``, it adds change points and uses parameters
     specifically tuned for daily data and 1-day forecast.
     """
-    SILVERKITE_DAILY_1_CONFIG_3: SINGLE_MODEL_TEMPLATE_TYPE = SILVERKITE_DAILY_1_CONFIG_3
+    SILVERKITE_DAILY_1_CONFIG_3: SINGLE_MODEL_TEMPLATE_TYPE = mutable_field(SILVERKITE_DAILY_1_CONFIG_3)
     """Config 3 in template ``SILVERKITE_DAILY_1``.
     Compared to ``SILVERKITE``, it adds change points and uses parameters
     specifically tuned for daily data and 1-day forecast.

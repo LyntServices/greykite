@@ -320,10 +320,7 @@ class AutoArimaEstimator(BaseForecastEstimator):
         # Starting pmdarima=2.0.0, pmdarima.utils.check_endog added parameter preserve_series
         # with default True, causing prediction[0] to result in pd.Series instead of ndarray
         if type(predictions[0]) == pd.Series:
-            # Tuple can't be changed - convert to list for a change
-            pred_list = list(predictions)
-            pred_list[0] = pred_list[0].to_numpy()
-            predictions = tuple(pred_list)
+            predictions = (predictions[0].to_numpy(), *predictions[1:])
 
         if append_length > 0:
             pred_df = pd.DataFrame({

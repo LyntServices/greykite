@@ -489,7 +489,7 @@ def test_raf_form_objective():
     prob = cp.Problem(obj, constraints=constraints)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=UserWarning)  # sometimes there is a warning about solver accuracy
-        prob.solve(feastol=1e-5, reltol=1e-8, abstol=1e-5, verbose=True)
+        prob.solve(solver=cp.ECOS,feastol=1e-5, reltol=1e-8, abstol=1e-5, verbose=True)
     assert_equal(prob.objective.value, raf.objective_fn(transform_variable.value)["total"])
 
     with pytest.raises(ValueError, match="`covariance` not recognized. Provide a valid string in \\['identity', 'sample'\\] or a matrix."):

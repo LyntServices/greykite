@@ -10,7 +10,7 @@ repository = "https://github.com/LyntServices/greykite.git"
 
 [tool.poetry.dependencies]
 python = "^3.11,<3.12"
-cvxpy = "1.4"  # 1.5 fails
+cvxpy = ">=1.4, <=1.5"
 dill = "^0.3.6"
 holidays = "0.13"
 holidays-ext = "^0.0.8"

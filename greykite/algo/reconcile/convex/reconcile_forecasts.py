@@ -1127,7 +1127,7 @@ class ReconcileAdditiveForecasts:
             # Forms and solves problem.
             prob = cp.Problem(obj, constraints)
             try:
-                prob.solve(**solver_kwargs)
+                prob.solve(solver=cp.ECOS, **solver_kwargs)
             except cp.SolverError as e:
                 warnings.warn(str(e))
 

@@ -317,6 +317,10 @@ class AutoArimaEstimator(BaseForecastEstimator):
             return_conf_int=self.return_conf_int,
             alpha=(1-self.coverage)
         )
+        # Starting pmdarima=2.0.0, pmdarima.utils.check_endog added parameter preserve_series
+        # with default True, causing prediction[0] to result in pd.Series instead of ndarray
+        if type(predictions[0]) == pd.Series:
+            predictions = (predictions[0].to_numpy(), *predictions[1:])
 
         if append_length > 0:
             pred_df = pd.DataFrame({

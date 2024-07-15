@@ -27,6 +27,7 @@ import matplotlib
 import numpy as np
 from matplotlib import pyplot as plt
 from pandas.plotting import register_matplotlib_converters
+from pandas import NamedAgg
 
 
 matplotlib.use("agg")  # noqa: E402
@@ -336,13 +337,12 @@ def plt_longterm_ts_agg(
         color_col = "curve_color"
         df["curve_color"] = color
 
-    agg_dict = {
-        time_col: np.nanmean,
-        value_col: agg_func,
-        color_col: choose_color_func}
-
     g = df.groupby([window_col], as_index=False)
-    df_agg = g.agg(agg_dict)
+    df_agg = g.agg(
+        time_col=NamedAgg(column=time_col, aggfunc=np.nanmean),
+        value_col=NamedAgg(column=value_col, aggfunc=agg_func),
+        color_col=NamedAgg(column=color_col, aggfunc=choose_color_func),
+    )
 
     df_agg.columns = [window_col, time_col, value_col, color_col]
     df_agg.sort_values(by=time_col, inplace=True)

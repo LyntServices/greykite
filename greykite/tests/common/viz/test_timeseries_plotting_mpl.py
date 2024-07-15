@@ -5,7 +5,6 @@ from functools import partial
 import matplotlib
 import numpy as np
 import pandas as pd
-import scipy.stats
 
 from greykite.common.viz.timeseries_plotting_mpl import plt_compare_timeseries
 from greykite.common.viz.timeseries_plotting_mpl import plt_longterm_ts_agg
@@ -164,7 +163,7 @@ def test_plt_longterm_ts_agg_custom_choose_color():
     # we define a custom `choose_color_func`
     # this function returns the most common color seen for the give slice
     def choose_color_func(x):
-        return scipy.stats.mode(x)[0][0]
+        return x.mode()[0]
 
     plt_longterm_ts_agg(
         df=df,

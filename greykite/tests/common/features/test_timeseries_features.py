@@ -470,7 +470,7 @@ def test_get_available_holiday_lookup_countries():
     valid_countries = get_available_holiday_lookup_countries()
     assert "Croatia" in valid_countries
     assert "datetime" not in valid_countries  # imported classes are excluded
-    assert len(valid_countries) == 289
+    assert len(valid_countries) == 290
 
     countries = ["IN", "India", "US", "UnitedStates", "UK"]
     valid_countries = get_available_holiday_lookup_countries(countries)

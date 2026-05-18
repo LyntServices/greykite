@@ -751,8 +751,9 @@ def test_plot_components(expected_component_names):
     trained_model = Pipeline([("estimator", SilverkiteEstimator(coverage=coverage))])
     with pytest.warns(Warning) as record:
         trained_model.fit(X, X[cst.VALUE_COL])
-        assert "Zero degrees of freedom" in record[0].message.args[0]
-        assert "No slice had sufficient sample size" in record[2].message.args[0]
+        warning_messages = [str(r.message) for r in record]
+        assert any("Zero degrees of freedom" in m for m in warning_messages)
+        assert any("No slice had sufficient sample size" in m for m in warning_messages)
     forecast = get_forecast(X, trained_model)
 
     # Tests plot_components

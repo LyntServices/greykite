@@ -45,6 +45,12 @@ class DtypeColumnSelector(BaseEstimator, TransformerMixin):
         self.include = include
         self.exclude = exclude
 
+    def __sklearn_tags__(self):
+        # Stateless: ``fit`` is a no-op.
+        tags = super().__sklearn_tags__()
+        tags.requires_fit = False
+        return tags
+
     def fit(self, X: pd.DataFrame, y: pd.Series = None):
         return self
 

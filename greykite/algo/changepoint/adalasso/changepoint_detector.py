@@ -324,17 +324,17 @@ class ChangepointDetector:
         if no_changepoint_distance_from_begin is not None:
             check_freq_unit_at_most_day(no_changepoint_distance_from_begin, "no_changepoint_distance_from_begin")
             data_length = pd.to_datetime(df[time_col].iloc[-1]) - pd.to_datetime(df[time_col].iloc[0])
-            no_changepoint_proportion_from_begin = to_offset(no_changepoint_distance_from_begin).delta / data_length
+            no_changepoint_proportion_from_begin = pd.Timedelta(to_offset(no_changepoint_distance_from_begin)) / data_length
             no_changepoint_proportion_from_begin = min(no_changepoint_proportion_from_begin, 1)
         if no_changepoint_distance_from_end is not None:
             check_freq_unit_at_most_day(no_changepoint_distance_from_end, "no_changepoint_distance_from_end")
             data_length = pd.to_datetime(df[time_col].iloc[-1]) - pd.to_datetime(df[time_col].iloc[0])
-            no_changepoint_proportion_from_end = to_offset(no_changepoint_distance_from_end).delta / data_length
+            no_changepoint_proportion_from_end = pd.Timedelta(to_offset(no_changepoint_distance_from_end)) / data_length
             no_changepoint_proportion_from_end = min(no_changepoint_proportion_from_end, 1)
         if potential_changepoint_distance is not None:
             check_freq_unit_at_most_day(potential_changepoint_distance, "potential_changepoint_distance")
             data_length = pd.to_datetime(df[time_col].iloc[-1]) - pd.to_datetime(df[time_col].iloc[0])
-            potential_changepoint_n = data_length // to_offset(potential_changepoint_distance).delta
+            potential_changepoint_n = data_length // pd.Timedelta(to_offset(potential_changepoint_distance))
             if potential_changepoint_n_max is not None:
                 if potential_changepoint_n_max <= 0:
                     raise ValueError("potential_changepoint_n_max must be a positive integer.")
@@ -546,7 +546,7 @@ class ChangepointDetector:
                 on=time_col,
                 how="right"
             )
-            trend_estimation["trend"].interpolate(inplace=True)
+            trend_estimation["trend"] = trend_estimation["trend"].interpolate()
             trend_estimation.index = df[time_col]
             trend_estimation = trend_estimation["trend"]
         else:
@@ -579,7 +579,7 @@ class ChangepointDetector:
                 "period": [24.0, 7.0, 1.0],
                 "order": [3, 3, 5],
                 "seas_names": ["daily", "weekly", "yearly"]}),
-            resample_freq="H",
+            resample_freq="h",
             regularization_strength=0.6,
             actual_changepoint_min_distance="30D",
             potential_changepoint_distance=None,
@@ -740,11 +740,11 @@ class ChangepointDetector:
         if no_changepoint_distance_from_end is not None:
             check_freq_unit_at_most_day(no_changepoint_distance_from_end, "no_changepoint_distance_from_end")
             data_length = pd.to_datetime(df[time_col].iloc[-1]) - pd.to_datetime(df[time_col].iloc[0])
-            no_changepoint_proportion_from_end = to_offset(no_changepoint_distance_from_end).delta / data_length
+            no_changepoint_proportion_from_end = pd.Timedelta(to_offset(no_changepoint_distance_from_end)) / data_length
         if potential_changepoint_distance is not None:
             check_freq_unit_at_most_day(potential_changepoint_distance, "potential_changepoint_distance")
             data_length = pd.to_datetime(df[time_col].iloc[-1]) - pd.to_datetime(df[time_col].iloc[0])
-            potential_changepoint_n = data_length // to_offset(potential_changepoint_distance).delta
+            potential_changepoint_n = data_length // pd.Timedelta(to_offset(potential_changepoint_distance))
         if regularization_strength is None:
             warnings.warn("regularization_strength is set to None. This will trigger cross-validation to "
                           "select the tuning parameter which might result in too many change points. "

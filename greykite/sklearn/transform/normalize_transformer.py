@@ -84,6 +84,9 @@ class NormalizeTransformer(BaseEstimator, TransformerMixin):
         self.scaler = None
         self._is_fitted = None
 
+    def __sklearn_is_fitted__(self):
+        return bool(self._is_fitted)
+
     def fit(self, X, y=None):
         """Fits the normalization transform.
 

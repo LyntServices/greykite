@@ -238,7 +238,7 @@ def generate_df_with_reg_for_tests(
     :param remove_extra_cols: bool
         whether to remove extra columns besides TIME_COL, VALUE_COL
     :param mask_test_actuals: bool
-        whether to set y values to np.NaN in the test set.
+        whether to set y values to np.nan in the test set.
     :param seed: int
         seed for reproducible result
     :return: Dict with train dataframe, test dataframe, and nrows in test dataframe
@@ -301,7 +301,7 @@ def generate_df_with_reg_for_tests(
         #   Try using .loc[row_indexer,col_indexer] = value instead
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            df.loc[df[TIME_COL] > train_end_date, VALUE_COL] = np.NaN
+            df.loc[df[TIME_COL] > train_end_date, VALUE_COL] = np.nan
 
     train_df = df.loc[df[TIME_COL] <= train_end_date]
     test_df = df.loc[df[TIME_COL] > train_end_date]
@@ -327,7 +327,7 @@ def daily_data_reg():
 def hourly_data_reg():
     """Generate 500 days of hourly data for tests"""
     return generate_df_with_reg_for_tests(
-        freq="H",
+        freq="h",
         periods=24*500,
         train_start_date=datetime.datetime(2018, 1, 1),
         conti_year_origin=2018)

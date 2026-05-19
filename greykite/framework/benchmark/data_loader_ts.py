@@ -150,7 +150,7 @@ class DataLoaderTS(DataLoader):
             df=df,
             time_col="ts",
             value_col="count",
-            freq="H",
+            freq="h",
             regressor_cols=["tmin", "tmax", "pn"]
         )
         return ts
@@ -206,7 +206,7 @@ class DataLoaderTS(DataLoader):
             df=df,
             time_col=TIME_COL,
             value_col="pm",
-            freq="H",
+            freq="h",
             regressor_cols=["dewp", "temp", "pres", "cbwd", "iws", "is", "ir"]
         )
         return ts

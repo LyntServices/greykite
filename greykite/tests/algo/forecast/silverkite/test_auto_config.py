@@ -94,7 +94,9 @@ def test_get_auto_holiday(df_daily):
     holiday_df_list = [holidays for _, holidays in holiday_df_dict.items()]
     holiday_df = pd.concat(holiday_df_list)
     # Removes the observed holidays and only keep the original holidays.
-    holiday_df = holiday_df[~holiday_df[EVENT_DF_LABEL_COL].str.contains("Observed")]
+    # Match case-insensitively because upstream ``holidays`` now uses the
+    # lowercase ``(observed)`` suffix.
+    holiday_df = holiday_df[~holiday_df[EVENT_DF_LABEL_COL].str.contains("observed", case=False)]
 
     # Calls `HolidayGrouper`.
     hg = HolidayGrouper(

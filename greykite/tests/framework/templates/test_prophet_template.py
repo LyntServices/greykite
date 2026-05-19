@@ -463,7 +463,8 @@ def test_prophet_hyperparameter_grid_warn():
                f"We currently support only 1 option. Using auto." in record[0].message.args[0]
 
     # no warning if only one list of holiday_lookup_countries is provided
-    with pytest.warns(None):
+    with warnings.catch_warnings():
+        warnings.simplefilter("always")
         events["holiday_pre_num_days"] = [1]
         events["holiday_post_num_days"] = [0]
         events["holiday_lookup_countries"] = [["UnitedStates", "China", "UnitedKingdom", "India"]]

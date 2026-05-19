@@ -123,7 +123,7 @@ def generate_anomaly_data_hourly():
         np.arange(8000, 8050)
     ]
     res = generate_anomaly_data(
-        freq="H",
+        freq="h",
         periods=24*400,
         anomaly_block_list=anomaly_block_list
     )

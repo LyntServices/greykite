@@ -620,7 +620,7 @@ def test_plot_flexible_grouping_evaluation():
     assert fig.layout.yaxis.title.text is None
     assert fig.layout.title.text is None
     assert fig.layout.title.x == 0.5
-    assert fig.data[0].x[0] == datetime.datetime(2020, 1, 1, 0, 0)
+    assert pd.Timestamp(fig.data[0].x[0]) == pd.Timestamp("2020-01-01 00:00:00")
     assert fig.data[1].line["color"] == "rgba(145, 0, 202, 1.0)"
     assert fig.data[1].fill is None
     assert not fig.layout.showlegend

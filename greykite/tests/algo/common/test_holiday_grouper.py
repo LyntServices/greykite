@@ -279,7 +279,7 @@ def test_group_holidays(daily_df, holiday_df):
         assert EVENT_DF_DATE_COL in event_df.columns
         assert EVENT_DF_LABEL_COL in event_df.columns
 
-    assert len(result_dict["daily_event_df_dict"]) == 4
+    assert len(result_dict["daily_event_df_dict"]) == 6
 
     # Runs again with a bigger bandwidth for clustering.
     new_bandwidth_multiplier = 1

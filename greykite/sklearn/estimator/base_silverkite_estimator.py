@@ -572,7 +572,7 @@ class BaseSilverkiteEstimator(BaseForecastEstimator):
                                  "you need to set ``freq`` and ``forecast_horizon``. "
                                  "However, at least one of them is None.")
             autoreg_dict = SilverkiteForecast()._SilverkiteForecast__get_default_autoreg_dict(
-                freq_in_days=to_offset(freq).delta.total_seconds() / 60 / 60 / 24,
+                freq_in_days=pd.Timedelta(to_offset(freq)).total_seconds() / 60 / 60 / 24,
                 forecast_horizon=forecast_horizon,
                 simulation_based=False
             )["autoreg_dict"]

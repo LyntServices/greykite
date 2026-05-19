@@ -22,7 +22,7 @@
 """Color palette for plotting."""
 
 import numpy as np
-from matplotlib.cm import get_cmap
+from matplotlib import colormaps
 from plotly.colors import DEFAULT_PLOTLY_COLORS
 from plotly.colors import n_colors
 from plotly.colors import validate_colors
@@ -87,12 +87,12 @@ def get_distinct_colors(
         raise ValueError("Opacity must be between 0 and 1.")
 
     if num_colors <= 10:
-        colors = get_cmap("tab10").colors
+        colors = colormaps["tab10"].colors
     elif num_colors <= 20:
-        colors = get_cmap("tab20").colors
+        colors = colormaps["tab20"].colors
     elif num_colors <= 256:
         # Removes default opacity by ":3".
-        colors = get_cmap(name="viridis")(np.linspace(0, 1, num_colors))[:, :3]
+        colors = colormaps["viridis"](np.linspace(0, 1, num_colors))[:, :3]
     else:
         raise ValueError("The maximum number of colors is 256.")
 

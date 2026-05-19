@@ -300,6 +300,11 @@ class AutoArimaEstimator(BaseForecastEstimator):
             timedelta_freq = "M"  # `to_period` does not recognize non-traditional frequencies
         else:
             timedelta_freq = self.freq
+        # ``pd.Period`` only recognizes the legacy single-letter aliases
+        # ('M', 'Q', 'Y'); pandas 2.2 introduced 'ME', 'QE', 'YE' for
+        # ``date_range``/``infer_freq``. Translate them back here.
+        _period_freq_aliases = {"ME": "M", "QE": "Q", "YE": "Y"}
+        timedelta_freq = _period_freq_aliases.get(timedelta_freq, timedelta_freq)
         chosen_d = self.model.model_.order[1]  # This is the value of the d chosen by auto-arima
         forecast_start = (X[self.time_col_].iloc[0].to_period(timedelta_freq) - self.fit_df[self.time_col_].iloc[0].to_period(timedelta_freq)).n
         if forecast_start < chosen_d:

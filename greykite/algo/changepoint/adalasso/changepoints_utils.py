@@ -813,7 +813,7 @@ def compute_min_changepoint_index_distance(
     except TypeError:
         changepoint_dist = (pd.to_datetime(df[time_col].iloc[-1]) - pd.to_datetime(df[time_col].iloc[0])) \
                            / n_changepoints
-    return int(np.ceil(min_dist.delta.total_seconds() / changepoint_dist.total_seconds()))
+    return int(np.ceil(pd.Timedelta(min_dist).total_seconds() / changepoint_dist.total_seconds()))
 
 
 def filter_changepoints(cp_blocks, coef, min_index_distance):
@@ -1341,7 +1341,7 @@ def get_yearly_seasonality_changepoint_dates_from_freq(
         return []
     check_freq_unit_at_most_day(yearly_seasonality_change_freq, "yearly_seasonality_change_freq")
     yearly_seasonality_change_freq = to_offset(yearly_seasonality_change_freq)
-    if yearly_seasonality_change_freq.delta < timedelta(days=365):
+    if pd.Timedelta(yearly_seasonality_change_freq) < timedelta(days=365):
         warnings.warn("yearly_seasonality_change_freq is less than a year. It might be too short "
                       "to fit accurate yearly seasonality.")
     check_freq_unit_at_most_day(min_training_length, "least_training_length")

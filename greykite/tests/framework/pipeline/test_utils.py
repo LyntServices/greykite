@@ -393,7 +393,7 @@ def test_get_score_func_with_aggregation():
         assert greater_is_better is False
         assert short_name == EvaluationMetricEnum.MeanAbsoluteError.get_metric_name()
 
-        y_true = pd.Series([3, 1, np.nan, 3, np.Inf])  # np.nan and np.Inf are ignored
+        y_true = pd.Series([3, 1, np.nan, 3, np.inf])  # np.nan and np.inf are ignored
         y_pred = pd.Series([1, 4, 100, 2, -2])
         assert score_func(y_true, y_pred) == 0.0  # 7 vs 7
         assert "Requested agg_periods=3, but there are only 1. Using all for aggregation" in record[0].message.args[0]

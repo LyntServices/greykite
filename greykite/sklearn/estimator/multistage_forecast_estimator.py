@@ -349,9 +349,9 @@ class MultistageForecastEstimator(BaseForecastEstimator):
         self.estimator_params: List[Optional[dict]] = [config.estimator_params for config in self.model_configs]
         # Assumes train length is integer multiples of 1 second, which is most of the cases.
         self.train_lengths_in_seconds: List[int] = [
-            to_offset(length).delta // timedelta(seconds=1) for length in self.train_lengths]
+            pd.Timedelta(to_offset(length)) // timedelta(seconds=1) for length in self.train_lengths]
         self.fit_lengths_in_seconds: List[int] = [
-            to_offset(length).delta // timedelta(seconds=1)
+            pd.Timedelta(to_offset(length)) // timedelta(seconds=1)
             if length is not None else None for length in self.fit_lengths]
         # If ``fit_length`` is None or is shorter than ``train_length``, it will be replaced by ``train_length``.
         fit_lengths_in_seconds = [
@@ -368,7 +368,7 @@ class MultistageForecastEstimator(BaseForecastEstimator):
             )
         self.models: List[BaseForecastEstimator] = [
             config.estimator(**config.estimator_params) for config in self.model_configs]
-        self.data_freq_in_seconds = to_offset(self.freq).delta // timedelta(seconds=1)
+        self.data_freq_in_seconds = pd.Timedelta(to_offset(self.freq)) // timedelta(seconds=1)
 
     @staticmethod
     def _get_agg_func(agg_func: Optional[Union[str, Callable]]):
@@ -416,7 +416,7 @@ class MultistageForecastEstimator(BaseForecastEstimator):
         num_points : `list` [`int`]
             The number of points in each aggregation period.
         """
-        return [to_offset(freq).delta // to_offset(data_freq).delta for freq in agg_freqs]
+        return [pd.Timedelta(to_offset(freq)) // pd.Timedelta(to_offset(data_freq)) for freq in agg_freqs]
 
     def _get_freq_col(self, index: int, freq: str):
         """Gets the column name for a specific stage/frequency.
@@ -791,7 +791,7 @@ class MultistageForecastEstimator(BaseForecastEstimator):
             past_df_end = train_start + 2 * to_offset(agg_freq)
             # By +1, we ensure that the ``past_df`` still has enough length after dropping incomplete periods.
             past_df_start = (fit_start
-                             - relativedelta(seconds=to_offset(agg_freq).delta.total_seconds() * (max_ar_order + 1)))
+                             - relativedelta(seconds=pd.Timedelta(to_offset(agg_freq)).total_seconds() * (max_ar_order + 1)))
             past_df = df[(df[self.time_col_] >= past_df_start) & (df[self.time_col_] <= past_df_end)]
             past_df = self._drop_incomplete_agg_and_aggregate_values(
                 df=past_df,

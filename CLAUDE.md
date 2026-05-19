@@ -4,14 +4,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Fork context
 
-This is **LyntServices' fork of LinkedIn's `greykite`** (`pyproject.toml` declares it as `Fork of greykite 1.0.0`). The fork's purpose is to make the library installable under Python 3.11–3.12 with updated dependencies (`cvxpy`, `scipy`, `pandas 2.x`, `numpy 1.26`, `scikit-learn 1.3.1`, etc.). Two parallel dependency declarations live in the repo and they intentionally disagree:
+This is **LyntServices' fork of LinkedIn's `greykite`** (`pyproject.toml` declares it as `Fork of greykite 1.0.0`). The fork's purpose is to make the library installable under Python 3.11–3.13 with updated dependencies (`cvxpy>=1.6`, `scipy`, `pandas 2.2+`, `numpy 2.x`, `scikit-learn>=1.5.2`, `statsmodels>=0.14.3`, `pmdarima>=2.1`, etc.). Two parallel dependency declarations live in the repo and they intentionally disagree:
 
-- `pyproject.toml` (uv / PEP 621) + `uv.lock` — **authoritative for this fork**. `requires-python = ">=3.11,<3.13"`, modern pinned versions, dev tools in the `dev` dependency group. Build backend is `uv_build`.
+- `pyproject.toml` (uv / PEP 621) + `uv.lock` — **authoritative for this fork**. `requires-python = ">=3.11,<3.14"`, semver ranges (no exact pins), dev tools in the `dev` dependency group. Build backend is `uv_build`. The `[tool.uv]` table contains a couple of `constraint-dependencies` (e.g., `scs>=3.2.7`, `rpds-py>=0.19.1`) to force transitive deps onto versions that ship cp313 wheels.
 - `setup.py` + `requirements-dev.txt` — inherited from upstream, targets Python 3.10 with older pins (pandas `<2.0.0`, scipy `<1.11.0`, etc.). Do not treat these as the source of truth; they remain for compatibility with upstream tooling but the install path is uv.
 
 When updating dependencies or Python version constraints, change `pyproject.toml` and re-lock with `uv lock`. The `setup.py` pins are stale by design.
 
-The project was migrated from Poetry to uv (see commit history). `.python-version` pins 3.11 because some dev-group packages (notably `watchdog==0.9.0`) are kept at upstream-era versions that don't build on 3.12 — uv will fetch 3.11 automatically.
+The project was migrated from Poetry to uv (see commit history). `.python-version` pins 3.13 by default; uv will fetch the matching interpreter automatically. Python 3.11 is still supported and tested.
+
+The `holidays_ext` PyPI package (last released 2022, unmaintained) is incompatible with the modern `holidays` package, so this fork ships a small in-repo shim at `greykite/common/features/_holidays_lookup.py` that exposes the same `get_holiday`, `get_holiday_df`, `get_available_holiday_lookup_countries`, `get_available_holidays_in_countries`, `get_available_holidays_across_countries` functions backed directly by upstream `holidays`. Several upstream holiday names have changed since this fork was originally built (e.g. `Chinese New Year` → `Chinese New Year (Spring Festival)`, `Thanksgiving` → `Thanksgiving Day`, `Easter Monday [England, Wales, Northern Ireland]` → `Easter Monday`, suffix `(Observed)` → `(observed)`); the silverkite `HOLIDAY_LOOKUP_COUNTRIES_AUTO` / `HOLIDAYS_TO_MODEL_SEPARATELY_AUTO` / `HOLIDAY_IMPACT_DICT` / `HOLIDAYS_TO_INTERACT` constants and the `HolidayInferrer._get_holiday_df` suffix matcher have been updated accordingly.
+
+The ECOS solver is no longer shipped with `cvxpy>=1.6`. Greykite now uses `cvxpy.CLARABEL` instead (in `algo/common/l1_quantile_regression.py` and `algo/reconcile/convex/reconcile_forecasts.py`).
 
 ## Common commands
 

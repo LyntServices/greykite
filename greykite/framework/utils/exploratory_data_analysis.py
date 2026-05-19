@@ -429,7 +429,7 @@ def get_exploratory_plots(
     html_str += "Partial auto-correlation plot can be a good guide to choose appropriate auto-regression lag terms. " \
                 "Use large spikes to model individual lag terms (`lag_dict`). " \
                 "Smaller but significant spikes can be grouped under `agg_lag_dict`."
-    ts.df[VALUE_COL].fillna(ts.df[VALUE_COL].median(), inplace=True)
+    ts.df[VALUE_COL] = ts.df[VALUE_COL].fillna(ts.df[VALUE_COL].median())
     fig, ax = plt.subplots(1, 2, figsize=(20, 10))
     plot_pacf(ts.df[VALUE_COL].values, lags=40, ax=ax[0])
     plot_acf(ts.df[VALUE_COL].values, lags=40, ax=ax[1])

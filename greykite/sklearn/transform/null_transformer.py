@@ -124,6 +124,9 @@ class NullTransformer(BaseEstimator, TransformerMixin):
                 f"method '{self.impute_params['method']}' is not allowed. "
                 f"Use method='linear' with `limit_direction` instead")
 
+    def __sklearn_is_fitted__(self):
+        return bool(self._is_fitted)
+
     def fit(self, X, y=None):
         """Updates `self.impute_params`.
 

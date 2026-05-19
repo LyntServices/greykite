@@ -979,7 +979,7 @@ def test_greykite_detector_daily_anomaly_at_df_end(daily_data, forecast_config_i
     """Tests ``GreykiteDetector`` when anomaly is at the end of the training data."""
     df_train = daily_data["df_train"].copy()
     # Adds anomalies at the end of the training data.
-    df_train["y"][-4:] = np.NaN
+    df_train["y"][-4:] = np.nan
     fig = plot_lines_markers(df=df_train, x_col=TIME_COL, line_cols=["y"])
     if FIG_SHOW:
         fig.show()

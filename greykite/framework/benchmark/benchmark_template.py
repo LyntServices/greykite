@@ -115,10 +115,10 @@ def benchmark_silverkite_template(
             forecast_horizon=forecast_horizon,
             cv_folds=result.grid_search.n_splits_,
             runtime_sec=round(runtime, 3),
-            train_mae=result.backtest.train_evaluation["MAE"].round(3),
-            train_mape=result.backtest.train_evaluation["MAPE"].round(3),
-            test_mae=result.backtest.test_evaluation["MAE"].round(3),
-            test_mape=result.backtest.test_evaluation["MAPE"].round(3)
+            train_mae=round(float(result.backtest.train_evaluation["MAE"]), 3),
+            train_mape=round(float(result.backtest.train_evaluation["MAPE"]), 3),
+            test_mae=round(float(result.backtest.test_evaluation["MAE"]), 3),
+            test_mape=round(float(result.backtest.test_evaluation["MAPE"]), 3)
         )
         benchmark_results.append(output_dict)
 

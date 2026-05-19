@@ -22,6 +22,7 @@
 """Defines some aggregation functions."""
 
 from enum import Enum
+from enum import member
 from functools import partial
 
 import numpy as np
@@ -31,12 +32,13 @@ class AggregationFunctionEnum(Enum):
     """Defines some common aggregation functions that can be retrieved by their names.
 
     Every function is wrapped with ``partial`` because Enum handles functions differently from values.
-    Wrapping with ``partial`` allows us to extract the function with variable keys.
+    Wrapping with ``partial`` (inside ``enum.member`` so Python 3.12+ keeps the value semantics)
+    allows us to extract the function with variable keys.
     """
-    mean = partial(np.mean)
-    median = partial(np.median)
-    nanmean = partial(np.nanmean)
-    maximum = partial(np.max)
-    minimum = partial(np.min)
-    sum = partial(np.sum)
-    weighted_average = partial(np.average)
+    mean = member(partial(np.mean))
+    median = member(partial(np.median))
+    nanmean = member(partial(np.nanmean))
+    maximum = member(partial(np.max))
+    minimum = member(partial(np.min))
+    sum = member(partial(np.sum))
+    weighted_average = member(partial(np.average))

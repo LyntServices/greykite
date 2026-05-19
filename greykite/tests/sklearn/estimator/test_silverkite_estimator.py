@@ -2,6 +2,7 @@ import datetime
 
 import numpy as np
 import pandas as pd
+import warnings
 import pytest
 from pandas.testing import assert_frame_equal
 from sklearn.linear_model import SGDRegressor
@@ -270,7 +271,8 @@ def test_setup2(params2):
 def test_validate_inputs():
     """Test validate_inputs"""
 
-    with pytest.warns(None) as record:
+    with warnings.catch_warnings(record=True) as record:
+        warnings.simplefilter("always")
         SilverkiteEstimator()
         assert len(record) == 0  # no warnings
 
@@ -653,7 +655,8 @@ def test_various_predictor_settings(daily_data_with_reg, params):
 def test_validate_fs_components_df():
     """Tests validate_fs_components_df function"""
     model = SilverkiteEstimator()
-    with pytest.warns(None) as record:
+    with warnings.catch_warnings(record=True) as record:
+        warnings.simplefilter("always")
         fs_components_df = pd.DataFrame({
             "name": ["tod", "tow"],
             "period": [24.0, 7.0],

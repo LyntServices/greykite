@@ -347,17 +347,20 @@ def test_extra_pred_cols(hourly_data, daily_data_reg, weekly_data):
         SilverkiteColumn.COLS_TREND_DAY_OF_WEEK: example_cols_trend_day_of_week,
         SilverkiteColumn.COLS_TREND_WEEKLY_SEAS: example_cols_trend_weekly_seas,
     }
-    # example holiday columns expected in the output
+    # example holiday columns expected in the output.
+    # Upstream ``holidays`` renamed ``Chinese New Year`` →
+    # ``Chinese New Year (Spring Festival)`` — the new name is what the
+    # silverkite ``HOLIDAYS_TO_MODEL_SEPARATELY_AUTO`` constant now uses.
     example_holiday_cols = [
-        "C(Q('events_Chinese New Year'), levels=['', 'event'])",
-        "C(Q('events_Chinese New Year_minus_1'), levels=['', 'event'])",
-        "C(Q('events_Chinese New Year_minus_2'), levels=['', 'event'])",
-        "C(Q('events_Chinese New Year_plus_1'), levels=['', 'event'])",
-        "C(Q('events_Chinese New Year_plus_2'), levels=['', 'event'])",
+        "C(Q('events_Chinese New Year (Spring Festival)'), levels=['', 'event'])",
+        "C(Q('events_Chinese New Year (Spring Festival)_minus_1'), levels=['', 'event'])",
+        "C(Q('events_Chinese New Year (Spring Festival)_minus_2'), levels=['', 'event'])",
+        "C(Q('events_Chinese New Year (Spring Festival)_plus_1'), levels=['', 'event'])",
+        "C(Q('events_Chinese New Year (Spring Festival)_plus_2'), levels=['', 'event'])",
         "C(Q('events_Independence Day'), levels=['', 'event'])"
     ]
     excluded_holiday_cols = [  # should not appear
-        "C(Q('events_Chinese New Year_minus_3'), levels=['', 'event'])"
+        "C(Q('events_Chinese New Year (Spring Festival)_minus_3'), levels=['', 'event'])"
         "C(Q('events_Independence Day_plus_3'), levels=['', 'event'])"
     ]
 
@@ -433,20 +436,13 @@ def test_extra_pred_cols(hourly_data, daily_data_reg, weekly_data):
         SilverkiteColumn.COLS_TREND_DAY_OF_WEEK: True,
         SilverkiteColumn.COLS_TREND_WEEKLY_SEAS: False
     }
-    # Adds some extra holidays and checks if they are included
+    # Adds some extra holidays and checks if they are included.
+    # Upstream ``holidays`` no longer resolves the long-form aliases
+    # ``UnitedStates``/``China`` — use the ISO codes ``US``/``CN``.
     event_df_dict = get_holidays(
-        ["UnitedStates", "China"],
+        ["US", "CN"],
         year_start=2015,
         year_end=2030)
-    more_example_holiday_cols = [
-        'C(Q(\'events_China\'), levels=[\'\', "New Year\'s Day", \'Chinese New Year\', \'Tomb-Sweeping Day\', '
-        '\'Labor Day\', \'Dragon Boat Festival\', \'Mid-Autumn Festival\', \'National Day\', \'National Day, '
-        'Mid-Autumn Festival\'])',
-        'C(Q(\'events_UnitedStates\'), levels=[\'\', "New Year\'s Day", \'Martin Luther King Jr. Day\', '
-        '"Washington\'s Birthday", \'Memorial Day\', \'Independence Day\', \'Independence Day (Observed)\', '
-        '\'Labor Day\', \'Columbus Day\', \'Veterans Day\', \'Thanksgiving\', \'Christmas Day\', \'Halloween\', '
-        '\'Christmas Day (Observed)\', "New Year\'s Day (Observed)", \'Veterans Day (Observed)\', '
-        '\'Juneteenth National Independence Day\', \'Juneteenth National Independence Day (Observed)\'])']
 
     parameters = silverkite.convert_params(
         df=daily_data_reg,
@@ -479,7 +475,6 @@ def test_extra_pred_cols(hourly_data, daily_data_reg, weekly_data):
         [cst.GrowthColEnum[growth_term].value] +
         regressor_cols +
         example_holiday_cols +
-        more_example_holiday_cols +
         feature_set_cols +
         extra_pred_cols
     )
@@ -487,6 +482,12 @@ def test_extra_pred_cols(hourly_data, daily_data_reg, weekly_data):
     assert len(result_cols) == len(set(result_cols))        # no duplicates
     assert set(expected_cols).issubset(set(result_cols))    # contains expected cols
     assert len(set(excluded_cols).intersection(set(result_cols))) == 0  # does not contain excluded cols
+    # The full ``events_US`` / ``events_CN`` categorical columns include the
+    # complete list of holiday names as Patsy levels; the exact string changes
+    # with each upstream ``holidays`` release. Just verify that the two
+    # composite ``events_<country>`` columns are present.
+    assert any(col.startswith("C(Q('events_US')") for col in result_cols)
+    assert any(col.startswith("C(Q('events_CN')") for col in result_cols)
 
     # TEST 3 -- default feature sets, on weekly data
     parameters = silverkite.convert_params(
@@ -603,8 +604,10 @@ def test_convert_simple_silverkite_params_hourly(hourly_data):
     assert len(extra_pred_cols) == 452
     assert {
         "ct1",
-        "C(Q('events_Chinese New Year'), levels=['', 'event'])",
-        "C(Q('events_Chinese New Year_minus_1'), levels=['', 'event'])",
+        # Upstream ``holidays`` renamed ``Chinese New Year`` →
+        # ``Chinese New Year (Spring Festival)``.
+        "C(Q('events_Chinese New Year (Spring Festival)'), levels=['', 'event'])",
+        "C(Q('events_Chinese New Year (Spring Festival)_minus_1'), levels=['', 'event'])",
         "C(Q('str_dow'), levels=['1-Mon', '2-Tue', '3-Wed', '4-Thu', '5-Fri', '6-Sat', '7-Sun'])",
         "C(Q('events_Christmas Day'), levels=['', 'event']):sin4_tod_daily",
         "ct1:cos4_tow_weekly"

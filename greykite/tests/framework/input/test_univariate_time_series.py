@@ -42,7 +42,7 @@ def test_check_time_series1():
     assert ts.time_stats["max_timestamp"] == df.max()[0]
     assert ts.time_stats["added_timepoints"] == 0
     assert ts.time_stats["dropped_timepoints"] == 0
-    assert ts.freq == "S"
+    assert ts.freq.lower() == "s"
     assert ts.df[VALUE_COL].equals(ts.y)
     assert ts.df.index.name is None
 

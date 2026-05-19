@@ -51,6 +51,9 @@ class DropDegenerateTransformer(BaseEstimator, TransformerMixin):
         self.drop_cols = None
         self.keep_cols = None
 
+    def __sklearn_is_fitted__(self):
+        return self.keep_cols is not None
+
     def fit(self, X, y=None):
         """Identifies the degenerate columns, and sets ``self.keep_cols``
         and ``self.drop_cols``.

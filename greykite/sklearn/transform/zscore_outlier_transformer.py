@@ -63,6 +63,9 @@ class ZscoreOutlierTransformer(BaseEstimator, TransformerMixin):
         self.std = None
         self._is_fitted = None
 
+    def __sklearn_is_fitted__(self):
+        return bool(self._is_fitted)
+
     def fit(self, X, y=None):
         """Computes the column mean and standard deviation,
         stored as ``mean`` and ``std`` attributes.

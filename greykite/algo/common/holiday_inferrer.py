@@ -32,7 +32,7 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-from holidays_ext.get_holidays import get_holiday_df
+from greykite.common.features._holidays_lookup import get_holiday_df
 from plotly import graph_objs as go
 from plotly.subplots import make_subplots
 
@@ -407,11 +407,15 @@ class HolidayInferrer:
         # and the original holiday in the same year will be removed.
 
         # Sub-df that contains observed holidays only.
-        observed_df = country_holiday_df[country_holiday_df["holiday"].str[-10:] == "(Observed)"]
+        # Upstream ``holidays`` switched the suffix from ``(Observed)`` (case
+        # sensitive) to ``(observed)`` — match case-insensitively.
+        observed_df = country_holiday_df[
+            country_holiday_df["holiday"].str.lower().str.endswith("(observed)")
+        ]
         # Row indices to rename.
         rows_to_rename = observed_df.index.tolist()
         # Date-holiday tuple to remove.
-        # ":-11" truncates the " (Observed)" suffix.
+        # ":-11" truncates the " (Observed)" / " (observed)" suffix.
         # This is used to identify rows to remove.
         date_holiday_to_remove = [(row[1]["ts"], row[1]["holiday"][:-11]) for row in observed_df.iterrows()]
         # Row indices to remove.

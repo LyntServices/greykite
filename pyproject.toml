@@ -68,6 +68,8 @@ dev = [
     "pytest>=8.3,<9",
     "pytest-runner>=6.0,<7",
     "cmake>=3.30,<4",
+    "tox>=4.21,<5",
+    "tox-uv>=1.16,<2",
 ]
 
 [tool.uv]

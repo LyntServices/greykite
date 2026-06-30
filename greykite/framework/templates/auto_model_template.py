@@ -141,7 +141,7 @@ def get_auto_silverkite_model_template(
     # we choose the most appropriate model template.
     # If no close model template is available,
     # the model template remains the default.
-    if freq == "H":
+    if freq in ("H", "h"):
         if not splits_sufficient:
             # For 1 hour case, the best single model template
             # uses linear fit algorithm which has small risk of numerical issues.
@@ -179,7 +179,7 @@ def get_auto_silverkite_model_template(
             model_template = SILVERKITE_WEEKLY[0]
         else:
             model_template = ModelTemplateEnum.SILVERKITE_WEEKLY.name
-    elif freq in ["M", "MS", "SM", "BM", "CBM", "SMS", "BMS", "CBMS"]:
+    elif freq in ["M", "ME", "MS", "SM", "BM", "BME", "CBM", "CBME", "SMS", "BMS", "CBMS"]:
         # Monthly template includes monthly data and some variants.
         # See pandas documentation
         # https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases

@@ -1162,21 +1162,21 @@ def plot_precision_recall_curve(
     layout = go.Layout(
         xaxis=dict(
             title=recall_col.title(),
-            titlefont=dict(size=axis_font_size),
+            title_font=dict(size=axis_font_size),
             range=[0 - range_epsilon, 1 + range_epsilon],  # Sets the range of xaxis.
             tickfont_size=axis_font_size,
             tickformat=".0%",
             hoverformat=",.1%"),  # Keeps 1 decimal place.
         yaxis=dict(
             title=precision_col.title(),
-            titlefont=dict(size=axis_font_size),
+            title_font=dict(size=axis_font_size),
             range=[0 - range_epsilon, 1 + range_epsilon],  # Sets the range of yaxis.
             tickfont_size=axis_font_size,
             tickformat=".0%",
             hoverformat=",.1%"),  # Keeps 1 decimal place.
         title=title.title(),
         title_x=0.5,
-        titlefont=dict(size=title_font_size),
+        title_font=dict(size=title_font_size),
         autosize=False,
         width=1000,
         height=800)

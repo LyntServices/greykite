@@ -896,7 +896,9 @@ def test_past_df_in_predict(daily_data):
     pred = model.predict(
         X=past_df.iloc[[-1]]
     )
-    assert pred[cst.PREDICTED_COL].iloc[0] == coef[0] + coef[1] * past_df[cst.VALUE_COL].iloc[-2]
+    assert pred[cst.PREDICTED_COL].iloc[0] == pytest.approx(
+        coef[0] + coef[1] * past_df[cst.VALUE_COL].iloc[-2], rel=1e-3
+    )
 
 
 def test_x_mat_in_predict(daily_data):

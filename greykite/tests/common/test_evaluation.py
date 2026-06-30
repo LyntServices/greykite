@@ -80,9 +80,9 @@ def test_valid_elements_for_evaluation():
     """Tests valid_elements_for_evaluation function"""
 
     with pytest.warns(Warning) as record:
-        y_true = [1.0, np.nan, 2.0, np.Inf]
+        y_true = [1.0, np.nan, 2.0, np.inf]
         y_pred = [np.nan, 2.0, 1.0, 2.0]
-        y_another = [2.0, 1.0, np.nan, np.Inf]
+        y_another = [2.0, 1.0, np.nan, np.inf]
         y_true, y_pred, y_another = valid_elements_for_evaluation(
             reference_arrays=[y_true],
             arrays=[y_pred, y_another],
@@ -96,9 +96,9 @@ def test_valid_elements_for_evaluation():
 
     # Leading NAs and keep inf
     with pytest.warns(Warning) as record:
-        y_true = [np.nan, 2.0, np.nan, np.Inf]
+        y_true = [np.nan, 2.0, np.nan, np.inf]
         y_pred = [np.nan, 2.0, 1.0, 2.0]
-        y_another = [2.0, 1.0, np.nan, np.Inf]
+        y_another = [2.0, 1.0, np.nan, np.inf]
         y_true, y_pred, y_another = valid_elements_for_evaluation(
             reference_arrays=[y_true],
             arrays=[y_pred, y_another],
@@ -106,15 +106,15 @@ def test_valid_elements_for_evaluation():
             drop_leading_only=True,
             keep_inf=True)
         assert "1 value(s) in y_true were NA and are omitted in error calc." in record[0].message.args[0]
-        assert_array_equal(y_true, np.array([2.0, np.nan, np.Inf]))
+        assert_array_equal(y_true, np.array([2.0, np.nan, np.inf]))
         assert_array_equal(y_pred, np.array([2.0, 1.0, 2.0]))
-        assert_array_equal(y_another, np.array([1.0, np.nan, np.Inf]))
+        assert_array_equal(y_another, np.array([1.0, np.nan, np.inf]))
 
     # All NAs and drop inf
     with pytest.warns(Warning) as record:
-        y_true = [np.nan, np.nan, 2.0, np.Inf]
+        y_true = [np.nan, np.nan, 2.0, np.inf]
         y_pred = [np.nan, 2.0, 1.0, 2.0]
-        y_another = [2.0, 1.0, np.nan, np.Inf]
+        y_another = [2.0, 1.0, np.nan, np.inf]
         y_true, y_pred, y_another = valid_elements_for_evaluation(
             reference_arrays=[y_true],
             arrays=[y_pred, y_another],
@@ -128,9 +128,9 @@ def test_valid_elements_for_evaluation():
 
     # All NAs and keep inf
     with pytest.warns(Warning) as record:
-        y_true = [np.nan, 2.0, np.nan, np.Inf]
+        y_true = [np.nan, 2.0, np.nan, np.inf]
         y_pred = [np.nan, 2.0, 1.0, 2.0]
-        y_another = [2.0, 1.0, np.nan, np.Inf]
+        y_another = [2.0, 1.0, np.nan, np.inf]
         y_true, y_pred, y_another = valid_elements_for_evaluation(
             reference_arrays=[y_true],
             arrays=[y_pred, y_another],
@@ -139,12 +139,12 @@ def test_valid_elements_for_evaluation():
             keep_inf=True)
         assert "2 value(s) in y_true were NA and are omitted in error calc." in record[0].message.args[
             0]
-        assert_array_equal(y_true, np.array([2.0, np.Inf]))
+        assert_array_equal(y_true, np.array([2.0, np.inf]))
         assert_array_equal(y_pred, np.array([2.0, 2.0]))
-        assert_array_equal(y_another, np.array([1.0, np.Inf]))
+        assert_array_equal(y_another, np.array([1.0, np.inf]))
 
     with pytest.warns(Warning) as record:
-        y_true = [1.0, np.nan, 2.0, np.Inf]
+        y_true = [1.0, np.nan, 2.0, np.inf]
         y_pred = [np.nan, 2.0, 1.0, 2.0]
         y_another = 2.0
         y_last = None
@@ -161,7 +161,7 @@ def test_valid_elements_for_evaluation():
         assert "2 value(s) in y_true were NA or infinite and are omitted in error calc." in record[0].message.args[0]
 
     with pytest.warns(Warning) as record:
-        y_true = [np.nan, np.Inf]
+        y_true = [np.nan, np.inf]
         y_pred = [np.nan, 2.0]
         y_another = 2.0
         y_last = None
@@ -268,7 +268,7 @@ def test_add_finite_filter_to_scorer():
         assert "1 value(s) in y_true were NA or infinite and are omitted in error calc." in record[0].message.args[0]
 
     with pytest.warns(UserWarning) as record:
-        y_true = pd.Series([np.Inf, np.nan])
+        y_true = pd.Series([np.inf, np.nan])
         y_pred = pd.Series([2, 2])
         score_func = add_finite_filter_to_scorer(mean_absolute_error)
         assert score_func(y_true, y_pred) is None
@@ -307,7 +307,7 @@ def test_model_r2_score():
         # specify custom loss function
         assert r2_null_model_score(y_true, y_pred, loss_func=median_absolute_error) == 0.5
         # no data to evaluate
-        assert r2_null_model_score([np.Inf], [1.0]) is None
+        assert r2_null_model_score([np.inf], [1.0]) is None
         assert "1 value(s) in y_true were NA or infinite and are omitted in error calc." in record[0].message.args[0]
 
 
@@ -343,7 +343,7 @@ def test_calc_pred_err1():
         assert res[enum.get_metric_name()] == 0.0
 
     with pytest.warns(UserWarning) as record:
-        res = calc_pred_err([np.Inf], [1.0])
+        res = calc_pred_err([np.inf], [1.0])
         assert "There are 0 non-null elements for evaluation." in record[0].message.args[0]
         for key, value in res.items():
             assert value is None
@@ -376,7 +376,7 @@ def test_mean_absolute_percent_error():
     assert mean_absolute_percent_error(y_true, y_pred) == pytest.approx((50 + 25 + 12.5) / 3.0)
 
     with pytest.warns(UserWarning) as record:
-        y_true = [np.Inf, 1.0, 2.0, 4.0]
+        y_true = [np.inf, 1.0, 2.0, 4.0]
         y_pred = [34.0, 0.5, 1.5, 3.5]
         assert mean_absolute_percent_error(y_true, y_pred) == pytest.approx((50 + 25 + 12.5) / 3.0)
         assert "1 value(s) in y_true were NA or infinite and are omitted in error calc." in record[0].message.args[0]
@@ -401,7 +401,7 @@ def test_median_absolute_percent_error():
     assert median_absolute_percent_error(y_true, y_pred) == 25
 
     with pytest.warns(UserWarning) as record:
-        y_true = [np.Inf, 1.0, 2.0, 4.0]
+        y_true = [np.inf, 1.0, 2.0, 4.0]
         y_pred = [34.0, 0.5, 1.5, 3.5]
         assert median_absolute_percent_error(y_true, y_pred) == 25
         assert "1 value(s) in y_true were NA or infinite and are omitted in error calc." in record[0].message.args[0]
@@ -426,7 +426,7 @@ def test_symmetric_mean_absolute_percent_error():
     assert symmetric_mean_absolute_percent_error(y_true, y_pred) == pytest.approx(100 * (.5 / 1.5 + .5 / 3.5 + .5 / 7.5)
                                                                                   / 3.0)
     with pytest.warns(UserWarning) as record:
-        y_true = [np.Inf, 1.0, 2.0, 4.0]
+        y_true = [np.inf, 1.0, 2.0, 4.0]
         y_pred = [34.0, 0.5, 1.5, 3.5]
         assert symmetric_mean_absolute_percent_error(y_true, y_pred) == pytest.approx(
             100 * (.5 / 1.5 + .5 / 3.5 + .5 / 7.5)
@@ -453,7 +453,7 @@ def test_root_mean_squared_error():
     assert root_mean_squared_error(y_true, y_pred) == pytest.approx(math.sqrt((0.5 ** 2 + 0.5 ** 2 + 1.5 ** 2) / 3.0))
 
     with pytest.warns(UserWarning) as record:
-        y_true = [np.Inf, 1.0, 2.0, 2.0]
+        y_true = [np.inf, 1.0, 2.0, 2.0]
         y_pred = [34.0, 0.5, 1.5, 3.5]
         assert root_mean_squared_error(y_true, y_pred) == pytest.approx(
             math.sqrt((0.5 ** 2 + 0.5 ** 2 + 1.5 ** 2) / 3.0))
@@ -475,7 +475,7 @@ def test_correlation():
     assert correlation(y_true, y_pred) == pytest.approx(0.0)
 
     with pytest.warns(UserWarning) as record:
-        y_true = [np.Inf, 1.0, 3.0, 7.0]
+        y_true = [np.inf, 1.0, 3.0, 7.0]
         y_pred = [34.0, 0.5, 1.5, 3.5]
         assert correlation(y_true, y_pred) == pytest.approx(1.0)
         assert "1 value(s) in y_true were NA or infinite and are omitted in error calc." in record[0].message.args[0]
@@ -501,14 +501,14 @@ def test_quantile_loss():
     assert quantile_loss(y_true, y_pred, q=0.9) == pytest.approx(0.95 / 3.0)
 
     with pytest.warns(UserWarning) as record:
-        y_true = [np.Inf, 1.0, 2.0, 3.0]
+        y_true = [np.inf, 1.0, 2.0, 3.0]
         y_pred = [34.0, 0.5, 1.5, 3.5]
         assert quantile_loss(y_true, y_pred) == pytest.approx(0.975 / 3.0)
         assert "1 value(s) in y_true were NA or infinite and are omitted in error calc." in record[0].message.args[0]
         assert quantile_loss(y_true, y_pred, q=0.9) == pytest.approx(0.95 / 3.0)
 
     with pytest.warns(UserWarning) as record:
-        assert quantile_loss([np.Inf], [1.0]) is None
+        assert quantile_loss([np.inf], [1.0]) is None
         assert "There are 0 non-null elements for evaluation." in record[0].message.args[0]
 
 
@@ -534,7 +534,7 @@ def test_fraction_within_bands():
     ) == 0.25
 
     with pytest.warns(UserWarning) as record:
-        assert fraction_within_bands([np.Inf], [1.0], [2.0]) is None
+        assert fraction_within_bands([np.inf], [1.0], [2.0]) is None
         assert "There are 0 non-null elements for evaluation." in record[0].message.args[0]
 
     with pytest.raises(Exception, match="length of arrays do not match"):
@@ -574,7 +574,7 @@ def test_mean_interval_score():
 
     # Checks that the mean interval score equals infinity if any of lower or upper is infinity.
     assert mean_interval_score(
-        lower=[-np.Inf, 0., 0., 0.],
+        lower=[-np.inf, 0., 0., 0.],
         observed=[2., 2., 2., 2.],
         upper=[5., 5., 5., 5.],
         coverage=0.95
@@ -617,10 +617,10 @@ def test_mean_interval_score():
         assert "1 value(s) in y_true were NA or infinite and are omitted in error calc" in record[0].message.args[0]
 
     with pytest.warns(UserWarning) as record:
-        # Checks that the mean interval score returns the correct value even if there are `np.Inf` in the observed.
+        # Checks that the mean interval score returns the correct value even if there are `np.inf` in the observed.
         assert mean_interval_score(
             lower=[0., 0., 0., 0.],
-            observed=[2., np.Inf, 2., 2.],
+            observed=[2., np.inf, 2., 2.],
             upper=[5., 5., 5., 5.],
             coverage=0.95
         ) == 5.0
@@ -658,7 +658,7 @@ def test_prediction_band_width():
     ) is None
 
     with pytest.warns(UserWarning) as record:
-        assert prediction_band_width([np.Inf], [1.0], [2.0]) is None
+        assert prediction_band_width([np.inf], [1.0], [2.0]) is None
         assert "There are 0 non-null elements for evaluation." in record[0].message.args[0]
 
     with pytest.warns(Warning) as record:
@@ -739,7 +739,7 @@ def test_calc_pred_coverage():
         assert res[COVERAGE_VS_INTENDED_DIFF] == 1.0 / 3.0 - 0.7
 
     with pytest.warns(UserWarning) as record:
-        res = calc_pred_coverage([np.Inf], [1.5], [1.0], [2.0], 0.9)
+        res = calc_pred_coverage([np.inf], [1.5], [1.0], [2.0], 0.9)
         assert "There are 0 non-null elements for evaluation" in record[0].message.args[0]
         for key, value in res.items():
             assert value is None

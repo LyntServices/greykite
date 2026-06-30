@@ -620,7 +620,7 @@ def test_plot_flexible_grouping_evaluation():
     assert fig.layout.yaxis.title.text is None
     assert fig.layout.title.text is None
     assert fig.layout.title.x == 0.5
-    assert fig.data[0].x[0] == datetime.datetime(2020, 1, 1, 0, 0)
+    assert pd.Timestamp(fig.data[0].x[0]) == pd.Timestamp("2020-01-01 00:00:00")
     assert fig.data[1].line["color"] == "rgba(145, 0, 202, 1.0)"
     assert fig.data[1].fill is None
     assert not fig.layout.showlegend
@@ -751,8 +751,9 @@ def test_plot_components(expected_component_names):
     trained_model = Pipeline([("estimator", SilverkiteEstimator(coverage=coverage))])
     with pytest.warns(Warning) as record:
         trained_model.fit(X, X[cst.VALUE_COL])
-        assert "Zero degrees of freedom" in record[0].message.args[0]
-        assert "No slice had sufficient sample size" in record[2].message.args[0]
+        warning_messages = [str(r.message) for r in record]
+        assert any("Zero degrees of freedom" in m for m in warning_messages)
+        assert any("No slice had sufficient sample size" in m for m in warning_messages)
     forecast = get_forecast(X, trained_model)
 
     # Tests plot_components

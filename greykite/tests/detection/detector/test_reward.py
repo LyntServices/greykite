@@ -1,3 +1,5 @@
+from pytest import approx
+
 from greykite.detection.common.ad_evaluation import f1_score
 from greykite.detection.common.ad_evaluation import precision_score
 from greykite.detection.common.ad_evaluation import recall_score
@@ -79,7 +81,7 @@ def test_reward():
         Reward(f1))
 
     obj_value = combined_reward.apply(y_true=y_true, y_pred=y_pred)
-    assert obj_value == raw_f1_value + raw_recall_value - 1.0
+    assert obj_value == approx(raw_f1_value + raw_recall_value - 1.0)
 
     # This adds a numeric value to f1
     combined_reward = Reward(f1) + 13
@@ -134,11 +136,11 @@ def test_reward():
         Reward(f1))
 
     obj_value = combined_reward.apply(y_true=y_true, y_pred=y_pred)
-    assert obj_value == raw_f1_value * raw_recall_value * 0.1
+    assert obj_value == approx(raw_f1_value * raw_recall_value * 0.1)
 
     # Apply the class operations to construct f1
     rec_obj = Reward(rec)
     prec_obj = Reward(prec)
     half_f1_obj = (2 * rec_obj * prec_obj) / (rec_obj + prec_obj)
     obj_value = half_f1_obj.apply(y_true=y_true, y_pred=y_pred)
-    assert obj_value == raw_f1_value
+    assert obj_value == approx(raw_f1_value)

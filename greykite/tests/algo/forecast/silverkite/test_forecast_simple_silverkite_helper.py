@@ -66,17 +66,22 @@ def test_dedup_holiday_dict():
 
 def test_split_events_into_dictionaries():
     """Tests split_events_into_dictionaries"""
-    countries = ["UnitedStates", "UnitedKingdom", "India", "France"]
+    # Upstream ``holidays`` only accepts ISO country codes (the long names
+    # ``UnitedStates``/``UnitedKingdom``/``India``/``France`` no longer
+    # resolve).
+    countries = ["US", "UK", "IN", "FR"]
     year_start = 2019
     year_end = 2020
     holidays_to_model_separately = [
         "New Year's Day",
         "Christmas Day",
         "Independence Day",
-        "Thanksgiving",
+        # Upstream renamed ``Thanksgiving`` → ``Thanksgiving Day``.
+        "Thanksgiving Day",
         "Labor Day",
         "Good Friday",
-        "Easter Monday [England, Wales, Northern Ireland]",
+        # Upstream simplified ``Easter Monday [England, Wales, Northern Ireland]`` → ``Easter Monday``.
+        "Easter Monday",
         "Memorial Day",
         "Veterans Day"]
 
@@ -103,7 +108,7 @@ def test_split_events_into_dictionaries():
         EVENT_DF_LABEL_COL: [EVENT_INDICATOR, EVENT_INDICATOR]
     }))
 
-    assert daily_event_df_dict["Easter Monday [England, Wales, Northern Ireland]"].equals(pd.DataFrame({
+    assert daily_event_df_dict["Easter Monday"].equals(pd.DataFrame({
         EVENT_DF_DATE_COL: [datetime.datetime(2019, 4, 22), datetime.datetime(2020, 4, 13)],
         EVENT_DF_LABEL_COL: [EVENT_INDICATOR, EVENT_INDICATOR]
     }))
@@ -111,7 +116,7 @@ def test_split_events_into_dictionaries():
     # warns if holiday is not found in the countries
     with pytest.warns(Warning) as record:
         holidays_dict = get_holidays(
-            ["UnitedStates", "UnitedKingdom"],
+            ["US", "UK"],
             year_start=year_start,
             year_end=year_end)
         holiday_df = dedup_holiday_dict(holidays_dict)
@@ -124,17 +129,20 @@ def test_split_events_into_dictionaries():
 
 def test_generate_holiday_events():
     """Tests generate_holiday_events"""
-    countries = ["UnitedStates", "UnitedKingdom", "India", "France"]
+    # Upstream ``holidays`` only accepts ISO country codes.
+    countries = ["US", "UK", "IN", "FR"]
     year_start = 2019
     year_end = 2020
     holidays_to_model_separately = [
         "New Year's Day",
         "Christmas Day",
         "Independence Day",
-        "Thanksgiving",
+        # Upstream renamed ``Thanksgiving`` → ``Thanksgiving Day``.
+        "Thanksgiving Day",
         "Labor Day",
         "Good Friday",
-        "Easter Monday [England, Wales, Northern Ireland]",
+        # Upstream simplified ``Easter Monday [England, Wales, Northern Ireland]`` → ``Easter Monday``.
+        "Easter Monday",
         "Memorial Day",
         "Veterans Day"]
     pre_num = 2
@@ -164,7 +172,7 @@ def test_generate_holiday_events():
         EVENT_DF_LABEL_COL: [EVENT_INDICATOR, EVENT_INDICATOR]
     }))
 
-    assert daily_event_df_dict["Easter Monday [England, Wales, Northern Ireland]_plus_1"].equals(pd.DataFrame({
+    assert daily_event_df_dict["Easter Monday_plus_1"].equals(pd.DataFrame({
         EVENT_DF_DATE_COL: [datetime.datetime(2019, 4, 23), datetime.datetime(2020, 4, 14)],
         EVENT_DF_LABEL_COL: [EVENT_INDICATOR, EVENT_INDICATOR]
     }))

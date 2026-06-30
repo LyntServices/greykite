@@ -40,7 +40,7 @@ def test_load_hourly_bikesharing_ts():
     ts = dl.load_bikesharing_ts()
     assert ts.original_time_col == "ts"
     assert ts.original_value_col == "count"
-    assert ts.freq == "H"
+    assert ts.freq.lower() == "h"
     assert ts.regressor_cols == ["tmin", "tmax", "pn"]
     assert_equal(ts.df[VALUE_COL], ts.y)
 
@@ -50,7 +50,7 @@ def test_load_hourly_beijing_pm_ts():
     ts = dl.load_beijing_pm_ts()
     assert ts.original_time_col == TIME_COL
     assert ts.original_value_col == "pm"
-    assert ts.freq == "H"
+    assert ts.freq.lower() == "h"
     assert ts.regressor_cols == ["dewp", "temp", "pres", "cbwd", "iws", "is", "ir"]
     assert_equal(ts.df[VALUE_COL], ts.y)
 

@@ -325,7 +325,7 @@ class LagBasedEstimator(BaseForecastEstimator):
         # which does not match the last data point.
         # Since this is not a typical use case, we will fix it later and raise a warning for now.
         # "MS" is preferred.
-        if self.freq == "M":
+        if self.freq in ("M", "ME"):
             log_message(
                 message="The data frequency is 'M' which may lead to unexpected behaviors. "
                         "Please convert to 'MS' if applicable.",

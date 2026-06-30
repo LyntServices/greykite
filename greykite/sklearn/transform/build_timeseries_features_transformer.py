@@ -47,6 +47,9 @@ class BuildTimeseriesFeaturesTransformer(BaseEstimator, TransformerMixin):
         self.time_col = time_col
         self.origin_for_time_vars = None
 
+    def __sklearn_is_fitted__(self):
+        return self.origin_for_time_vars is not None
+
     def fit(self, X, y=None):
         """Sets the time origin for input time series"""
         assert isinstance(X, pd.DataFrame)

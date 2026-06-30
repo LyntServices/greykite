@@ -189,7 +189,7 @@ def l1_quantile_regression(
     # The problem.
     prob = cp.Problem(cp.Minimize(c.T @ var),
                       [var >= 0, x_vec @ var == y])
-    prob.solve(solver=cp.ECOS)
+    prob.solve(solver=cp.CLARABEL)
 
     # Gets the results.
     if include_intercept:

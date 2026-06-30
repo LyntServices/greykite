@@ -23,10 +23,6 @@
 import numpy as np
 import pandas as pd
 from sklearn.pipeline import FeatureUnion
-from sklearn.pipeline import _fit_transform_one
-from sklearn.pipeline import _transform_one
-from sklearn.utils._joblib import Parallel
-from sklearn.utils._joblib import delayed
 
 
 class PandasFeatureUnion(FeatureUnion):
@@ -75,56 +71,28 @@ class PandasFeatureUnion(FeatureUnion):
             transformer_weights=transformer_weights,
             verbose=verbose)
 
-    def fit_transform(self, X, y=None, **fit_params):
-        """Fits all transformers, transforms the data and concatenates results.
+    def _hstack(self, Xs):
+        """Concatenate transformer outputs as a pandas DataFrame.
 
-        Modified from `sklearn.pipeline.FeatureUnion`.
-
-        Parameters
-        ----------
-        X : `pandas.DataFrame`
-            Input data to be transformed.
-
-        y : array-like, shape (n_samples, ...), optional
-            Targets for supervised learning.
-
-        Returns
-        -------
-        X_t : `pandas.Dataframe`, shape (n_samples, sum_n_components)
-            column-wise concatenation of results of transformers. sum_n_components is the
-            sum of n_components (output dimension) over transformers.
+        Overrides ``FeatureUnion._hstack`` so the parent ``fit_transform`` and
+        ``transform`` methods (which call ``_hstack``) keep DataFrame output.
         """
-        results = self._parallel_func(X, y, fit_params, _fit_transform_one)
-
-        if not results:
-            # All transformers are None
-            return pd.DataFrame(np.zeros((X.shape[0], 0)))
-        Xs, transformers = zip(*results)
-        self._update_transformer_list(transformers)
-        Xs = pd.concat(Xs, axis=1)
-        return Xs
-
-    def transform(self, X):
-        """Transforms X separately by each transformer, concatenates results.
-
-        Modified from `sklearn.pipeline.FeatureUnion`
-
-        Parameters
-        ----------
-        X : `pandas.DataFrame`
-            Input data to be transformed.
-
-        Returns
-        -------
-        X_t : `pandas.DataFrame`, shape (n_samples, sum_n_components)
-            column-wise concatenation of results of transformers. sum_n_components is the
-            sum of n_components (output dimension) over transformers.
-        """
-        Xs = Parallel(n_jobs=self.n_jobs)(
-            delayed(_transform_one)(trans, X, None, weight)
-            for name, trans, weight in self._iter())
         if not Xs:
-            # All transformers are None
-            return pd.DataFrame(np.zeros((X.shape[0], 0)))
-        Xs = pd.concat(Xs, axis=1)
-        return Xs
+            return pd.DataFrame(np.zeros((0, 0)))
+        return pd.concat(Xs, axis=1)
+
+    def fit_transform(self, X, y=None, **params):
+        """Fit all transformers and concatenate results as a DataFrame."""
+        result = super().fit_transform(X, y=y, **params)
+        if isinstance(result, pd.DataFrame):
+            return result
+        n_rows = X.shape[0] if hasattr(X, "shape") else len(X)
+        return pd.DataFrame(np.zeros((n_rows, 0)))
+
+    def transform(self, X, **params):
+        """Transform X separately by each transformer and concatenate results."""
+        result = super().transform(X, **params)
+        if isinstance(result, pd.DataFrame):
+            return result
+        n_rows = X.shape[0] if hasattr(X, "shape") else len(X)
+        return pd.DataFrame(np.zeros((n_rows, 0)))

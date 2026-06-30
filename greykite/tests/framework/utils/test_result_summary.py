@@ -79,7 +79,8 @@ def test_get_ranks_and_splits(pipeline_results):
             "split_test": None}
 
     # `warns=False`
-    with pytest.warns(None):
+    with warnings.catch_warnings():
+        warnings.simplefilter("always")
         ranks_and_splits = get_ranks_and_splits(
             grid_search,
             score_func=EvaluationMetricEnum.MeanAbsolutePercentError.name,

@@ -30,7 +30,7 @@ from datetime import timedelta
 import numpy as np
 import pandas as pd
 import pytz
-from holidays_ext import get_holidays as get_hdays
+from greykite.common.features import _holidays_lookup as get_hdays
 from pandas.tseries.frequencies import to_offset
 from scipy.special import expit
 

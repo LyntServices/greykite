@@ -1222,7 +1222,7 @@ def plot_dual_axis_figure(
     # Updates figure layout.
     fig.update_layout(
         title_text=title,
-        titlefont=dict(size=title_font_size),
+        title_font=dict(size=title_font_size),
         autosize=False,
         width=1000,
         height=800,
@@ -1230,7 +1230,7 @@ def plot_dual_axis_figure(
     # Updates x-axis.
     fig.update_xaxes(
         title=xlabel,
-        titlefont=dict(size=axis_font_size),
+        title_font=dict(size=axis_font_size),
         range=x_range,
         tickfont_size=axis_font_size,
         tickformat=x_tick_format,
@@ -1239,7 +1239,7 @@ def plot_dual_axis_figure(
     fig.update_yaxes(
         title_text=ylabel_left,
         secondary_y=False,
-        titlefont=dict(size=axis_font_size),
+        title_font=dict(size=axis_font_size),
         range=y_left_range,
         tickfont_size=axis_font_size,
         tickformat=y_left_tick_format,
@@ -1248,7 +1248,7 @@ def plot_dual_axis_figure(
     fig.update_yaxes(
         title_text=ylabel_right,
         secondary_y=True,
-        titlefont=dict(size=axis_font_size),
+        title_font=dict(size=axis_font_size),
         range=y_right_range,
         tickfont_size=axis_font_size,
         tickformat=y_right_tick_format,

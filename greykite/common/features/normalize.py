@@ -100,7 +100,7 @@ def normalize_df(
     # Replaces 0.0 in denominator series with 1.0 to avoid dividing by zero
     # when the variable has zero variance
     if replace_zero_denom:
-        denominator_series.replace(to_replace=0.0, value=1.0, inplace=True)
+        denominator_series = denominator_series.replace(to_replace=0.0, value=1.0)
     drop_cols = []
     keep_cols = list(df.columns)
     normalized_df = (df - subtracted_series) / denominator_series

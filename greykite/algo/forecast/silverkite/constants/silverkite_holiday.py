@@ -26,18 +26,23 @@ from typing import Type
 class SilverkiteHoliday:
     """Holiday constants to be used by Silverkite"""
 
-    HOLIDAY_LOOKUP_COUNTRIES_AUTO = ("UnitedStates", "UnitedKingdom", "India", "France", "China")
+    # Upstream ``holidays`` only registers ISO country codes (the older long
+    # names like ``UnitedStates`` no longer resolve).
+    HOLIDAY_LOOKUP_COUNTRIES_AUTO = ("US", "UK", "IN", "FR", "CN")
     """Auto setting for the countries that contain the holidays to include in the model"""
 
     HOLIDAYS_TO_MODEL_SEPARATELY_AUTO = (
         "New Year's Day",
-        "Chinese New Year",
+        # Upstream renamed ``Chinese New Year`` → ``Chinese New Year (Spring Festival)``.
+        "Chinese New Year (Spring Festival)",
         "Christmas Day",
         "Independence Day",
-        "Thanksgiving",
+        # Upstream renamed ``Thanksgiving`` → ``Thanksgiving Day``.
+        "Thanksgiving Day",
         "Labor Day",
         "Good Friday",
-        "Easter Monday [England, Wales, Northern Ireland]",
+        # Upstream simplified ``Easter Monday [England, Wales, Northern Ireland]`` → ``Easter Monday``.
+        "Easter Monday",
         "Memorial Day",
         "Veterans Day")
     """Auto setting for the holidays to include in the model"""
@@ -56,8 +61,9 @@ class SilverkiteHoliday:
         "New Years Day_minus_2",
         "New Years Day_plus_1",
         "New Years Day_plus_2",
-        "Thanksgiving",  # always on a Thursday, so Thursday/Friday may be affected
-        "Thanksgiving_plus_1",
+        # Upstream renamed ``Thanksgiving`` → ``Thanksgiving Day``.
+        "Thanksgiving Day",  # always on a Thursday, so Thursday/Friday may be affected
+        "Thanksgiving Day_plus_1",
         "Independence Day")
     """Significant holidays that may have a different daily seasonality pattern"""
 

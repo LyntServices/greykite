@@ -158,9 +158,13 @@ def get_potential_changepoint_n(
     """
     try:
         # The ``resample_freq`` is one of "D", "3D" and "7D".
-        n_points_after_agg = np.floor(total_increment / to_offset(resample_freq).delta)
-    except AttributeError:
-        # The ``resample_freq`` is None or other freq that is at least "W".
+        offset = to_offset(resample_freq)
+        if offset is None:
+            raise ValueError("resample_freq is None")
+        n_points_after_agg = np.floor(total_increment / pd.Timedelta(offset))
+    except (AttributeError, ValueError):
+        # The ``resample_freq`` is None or a non-tick frequency (e.g. weekly,
+        # monthly) that pandas cannot directly convert to a Timedelta.
         n_points_after_agg = n_points
     # Sets number of potential changepoints to be at most
     # aggregated data length - # seasonality features - 1 (intercept term) for estimability.

@@ -489,7 +489,7 @@ def test_raf_form_objective():
     prob = cp.Problem(obj, constraints=constraints)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=UserWarning)  # sometimes there is a warning about solver accuracy
-        prob.solve(solver=cp.ECOS,feastol=1e-5, reltol=1e-8, abstol=1e-5, verbose=True)
+        prob.solve(solver=cp.CLARABEL, verbose=True)
     assert_equal(prob.objective.value, raf.objective_fn(transform_variable.value)["total"])
 
     with pytest.raises(ValueError, match="`covariance` not recognized. Provide a valid string in \\['identity', 'sample'\\] or a matrix."):
@@ -629,7 +629,7 @@ def test_raf_fit(data):
             "train": 0.08568482849991804,
             "var": 0.019903924375932396,
             "total": 0.4302796783858934
-        })
+        }, rel=1e-3)  # CLARABEL solver tolerance differs slightly from ECOS
 
     # Tests custom covariance matrix, unbiased=True, all terms in objective
     covariance = 20 * np.random.randn(m, m)
@@ -656,9 +656,9 @@ def test_raf_fit(data):
         weight_bias="MedAPE",
         weight_train=list(range(m)),
         weight_var=list(range(m, 0, -1)),
-        reltol=1e-7,  # solver params
-        abstol=1e-7,
-        feastol=1e-7)
+        tol_gap_rel=1e-7,  # CLARABEL solver params
+        tol_gap_abs=1e-7,
+        tol_feas=1e-7)
     scaled_covariance = covariance / Ya.mean()**2
     assert_equal(raf.objective_weights["covariance"], scaled_covariance)
     assert_equal(raf.objective_weights["weight_adj"], np.eye(m))

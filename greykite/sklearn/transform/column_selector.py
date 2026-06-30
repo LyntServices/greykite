@@ -33,6 +33,13 @@ class ColumnSelector(BaseEstimator, TransformerMixin):
     def __init__(self, column_names):
         self.column_names = column_names
 
+    def __sklearn_tags__(self):
+        # Stateless: ``fit`` is a no-op so ``check_is_fitted`` should not
+        # raise. Mark the estimator as not requiring fit (sklearn 1.6+).
+        tags = super().__sklearn_tags__()
+        tags.requires_fit = False
+        return tags
+
     def fit(self, X, y=None):
         return self
 

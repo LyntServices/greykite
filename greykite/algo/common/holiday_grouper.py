@@ -32,7 +32,6 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-from IPython.display import display
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sklearn.neighbors import KernelDensity
@@ -42,6 +41,11 @@ from greykite.algo.common.holiday_utils import HOLIDAY_DATE_COL
 from greykite.algo.common.holiday_utils import HOLIDAY_NAME_COL
 from greykite.algo.common.holiday_utils import get_dow_grouped_suffix
 from greykite.algo.common.holiday_utils import get_weekday_weekend_suffix
+
+try:
+    from IPython.display import display
+except ImportError:
+    display = print  # IPython is an optional dependency; fall back to print outside of notebooks.
 from greykite.common.constants import EVENT_DF_DATE_COL
 from greykite.common.constants import EVENT_DF_LABEL_COL
 from greykite.common.logging import LoggingLevelEnum

@@ -47,7 +47,7 @@ FORECAST_CONFIG_JSON_COMPLETE = dict(
         metadata_param=MetadataParam(
             time_col="time",
             value_col="value",
-            freq="H",
+            freq="h",
             date_format="%Y-%m-%d-%H",
             train_end_date="2021-07-01-10",
         ),
@@ -150,7 +150,7 @@ FORECAST_CONFIG_JSON_COMPLETE = dict(
         "metadata_param": {
             "time_col": "time",
             "value_col": "value",
-            "freq": "H",
+            "freq": "h",
             "date_format": "%Y-%m-%d-%H",
             "train_end_date": "2021-07-01-10"
         },

@@ -102,9 +102,9 @@ def contaminate_df_with_anomalies(
     for i in range(len(anomaly_block_list)):
         index_set = anomaly_block_list[i]
         # generate a random sign: either 1 or -1
-        s = 2*np.random.binomial(1, 0.5, 1) - 1
+        s = int(2*np.random.binomial(1, 0.5) - 1)
         for j in index_set:
-            multiplier = 1 + (s*np.random.uniform(delta_range_lower, delta_range_upper, 1))
+            multiplier = 1 + (s*np.random.uniform(delta_range_lower, delta_range_upper))
             y[j] = y[j]*multiplier
             if min_admissible_value is not None:
                 y[j] = max(min_admissible_value, y[j])
@@ -265,7 +265,7 @@ def generate_df_with_anomalies_sim_based(
 
     for i in range(len(anomaly_block_list)):
         index_set = anomaly_block_list[i]
-        s = 2*np.random.binomial(1, 0.5, 1)-1
+        s = int(2*np.random.binomial(1, 0.5) - 1)
         for j in index_set:
             y[j] = y[j] + (s*anomaly_coef*iqr[j])
 

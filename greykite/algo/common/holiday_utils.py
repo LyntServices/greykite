@@ -53,7 +53,8 @@ HOLIDAY_IMPACT_DICT = {
     "All Saints Day": (1, 1),  # 11/1.
     "Ascension Day": (1, 4),  # Thursday.
     "Assumption of Mary": (4, 4),  # 8/15, duplicated with "India_Independence Day".
-    "Chinese New Year": (4, 4),  # Varying.
+    # Upstream ``holidays`` renamed ``Chinese New Year`` → ``Chinese New Year (Spring Festival)``.
+    "Chinese New Year (Spring Festival)": (4, 4),  # Varying.
     "Christmas Day": (4, 3),  # 12/25.
     "Diwali": (4, 4),  # Varying.
     "Easter Sunday": (6, 1),  # Sunday.

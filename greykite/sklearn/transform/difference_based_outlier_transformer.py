@@ -109,6 +109,9 @@ class DifferenceBasedOutlierTransformer(BaseEstimator, TransformerMixin):
         self.score = None
         self._is_fitted = False
 
+    def __sklearn_is_fitted__(self):
+        return bool(self._is_fitted)
+
     def fit(self, X, y=None):
         """Computes the column-wise anomaly scores, stored as ``score`` attribute.
 

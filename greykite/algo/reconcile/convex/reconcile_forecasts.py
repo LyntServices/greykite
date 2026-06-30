@@ -44,9 +44,9 @@ from greykite.common.python_utils import reorder_columns
 
 
 try:
-    from IPython.core import display as ICD
+    from IPython.display import display as _ipython_display
 except ImportError:
-    pass  # ipython is an optional dependency, by default only enabled for development
+    _ipython_display = None  # ipython is an optional dependency, by default only enabled for development
 
 
 DEFAULT_METHOD = "custom"
@@ -1127,7 +1127,7 @@ class ReconcileAdditiveForecasts:
             # Forms and solves problem.
             prob = cp.Problem(obj, constraints)
             try:
-                prob.solve(solver=cp.ECOS, **solver_kwargs)
+                prob.solve(solver=cp.CLARABEL, **solver_kwargs)
             except cp.SolverError as e:
                 warnings.warn(str(e))
 
@@ -1309,8 +1309,8 @@ class ReconcileAdditiveForecasts:
         evaluation_df = evaluation_df[column_order]
 
         if ipython_display:
-            if "IPython.core" in sys.modules:
-                ICD.display(evaluation_df.round(1))
+            if _ipython_display is not None:
+                _ipython_display(evaluation_df.round(1))
             else:
                 print(evaluation_df.round(1))
 

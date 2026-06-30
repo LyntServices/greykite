@@ -919,7 +919,8 @@ def test_ignore_warnings():
         warnings.warn("warning message", FutureWarning)
         return f"{a} {b} {c}"
 
-    with pytest.warns(None):
+    with warnings.catch_warnings():
+        warnings.simplefilter("always")
         assert func(a=1, b=2) == "1 2 1"
 
     # warnings not suppressed

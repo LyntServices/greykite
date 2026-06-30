@@ -192,7 +192,7 @@ def test_gcd_dates():
     assert_equal(canonical_data_dict["time_stats"]["gaps"], find_missing_dates(df["time"]))
     assert canonical_data_dict["time_stats"]["added_timepoints"] == 0
     assert canonical_data_dict["time_stats"]["dropped_timepoints"] == 0
-    assert canonical_data_dict["freq"] == "S"
+    assert canonical_data_dict["freq"].lower() == "s"
     assert_equal(canonical_data_dict["df"][VALUE_COL].values, df["val"].values)
     assert canonical_data_dict["df"].index.name is None
 

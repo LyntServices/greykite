@@ -64,8 +64,13 @@ def process_intercept(x, beta, intercept, pred_cols):
     pred_cols : `list` [ `str` ]
         List of names of predictors, with "Intercept" in the first position.
     """
-    beta = np.copy(beta.ravel())
+    # ``np.asarray(...).ravel()`` avoids the pandas FutureWarning that fires
+    # for ``pd.Series.ravel`` and works for both Series and ndarray inputs.
+    beta = np.copy(np.asarray(beta).ravel())
     x = np.copy(x)
+    # ``intercept`` may arrive as a 0-d / 1-element array; reduce to scalar so
+    # numpy 2.x scalar assignment below is unambiguous.
+    intercept = float(np.asarray(intercept).ravel()[0])
 
     # Checks if x has an intercept column
     if not all(x[:, 0] == 1):

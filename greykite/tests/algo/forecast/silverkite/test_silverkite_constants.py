@@ -76,7 +76,7 @@ def test_simple_silverkite_constants():
     assert silverkite._silverkite_holiday is SilverkiteHoliday
     assert silverkite._silverkite_holiday.ALL_HOLIDAYS_IN_COUNTRIES == "ALL_HOLIDAYS_IN_COUNTRIES"
     assert silverkite._silverkite_holiday.HOLIDAY_LOOKUP_COUNTRIES_AUTO == (
-        "UnitedStates", "UnitedKingdom", "India", "France", "China")
+        "US", "UK", "IN", "FR", "CN")
 
     assert silverkite._silverkite_seasonality_enum is SilverkiteSeasonalityEnum
     assert silverkite._silverkite_seasonality_enum.DAILY_SEASONALITY.value.name == "tod"

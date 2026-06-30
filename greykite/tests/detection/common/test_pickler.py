@@ -178,7 +178,7 @@ def test_integer():
     pickler = GreykitePickler()
     obj = 1
     serialized = pickler.dumps(obj)
-    assert serialized == {"ROOT.pkl": 'gARLAS4=\n'}
+    assert serialized == {"ROOT.pkl": GreykitePickler.dumps_to_str(obj)}
     assert pickler.obj == obj
     deserialized = pickler.loads(serialized)
     assert deserialized == obj

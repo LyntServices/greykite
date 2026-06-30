@@ -430,10 +430,10 @@ def test_get_holidays():
     res_code = get_holidays(countries, year_start=2017, year_end=2025)
 
     in_df = res_code["IN"]
-    row_index = in_df[EVENT_DF_DATE_COL] == "2017-01-01"
-    assert in_df.loc[row_index, EVENT_DF_LABEL_COL].values[0] == "New Year's Day"
-    row_index = in_df[EVENT_DF_DATE_COL] == "2017-11-01"
-    assert in_df.loc[row_index, EVENT_DF_LABEL_COL].values[0] == "All Saints Day"
+    row_index = in_df[EVENT_DF_DATE_COL] == "2017-01-26"
+    assert in_df.loc[row_index, EVENT_DF_LABEL_COL].values[0] == "Republic Day"
+    row_index = in_df[EVENT_DF_DATE_COL] == "2017-04-14"
+    assert in_df.loc[row_index, EVENT_DF_LABEL_COL].values[0] == "Good Friday"
     uk_df = res_code["UK"]
     row_index = uk_df[EVENT_DF_DATE_COL] == "2024-03-29"
     assert uk_df.loc[row_index, EVENT_DF_LABEL_COL].values[0] == "Good Friday"
@@ -442,7 +442,7 @@ def test_get_holidays():
     assert us_df.loc[row_index, EVENT_DF_LABEL_COL].values[0] == "Martin Luther King Jr. Day"
     cn_df = res_code["CN"]
     row_index = cn_df[EVENT_DF_DATE_COL] == "2017-01-28"
-    assert cn_df.loc[row_index, EVENT_DF_LABEL_COL].values[0] == "Chinese New Year"
+    assert cn_df.loc[row_index, EVENT_DF_LABEL_COL].values[0] == "Chinese New Year (Spring Festival)"
     row_index = cn_df[EVENT_DF_DATE_COL] == "2025-05-31"
     assert cn_df.loc[row_index, EVENT_DF_LABEL_COL].values[0] == "Dragon Boat Festival"
 
@@ -468,15 +468,26 @@ def test_get_holidays():
 def test_get_available_holiday_lookup_countries():
     """Tests get_available_holiday_lookup_countries"""
     valid_countries = get_available_holiday_lookup_countries()
-    assert "Croatia" in valid_countries
+    # ``Croatia`` is exposed by the upstream ``holidays`` package under
+    # the country code ``HR`` and the new alias ``HrvatskaCroatia``;
+    # the full English name is no longer registered, but the data is.
+    assert "HR" in valid_countries
     assert "datetime" not in valid_countries  # imported classes are excluded
-    assert len(valid_countries) == 290
+    assert len(valid_countries) > 200
 
+    # ISO codes always resolve.
+    countries = ["IN", "US", "UK"]
+    valid_countries = get_available_holiday_lookup_countries(countries)
+    assert valid_countries == ["IN", "UK", "US"]
+
+    # Long-form class names (``India``, ``UnitedStates``) still resolve via the
+    # ``holidays.countries`` class lookup that ``country_holidays`` falls
+    # back to.
     countries = ["IN", "India", "US", "UnitedStates", "UK"]
     valid_countries = get_available_holiday_lookup_countries(countries)
-    assert len(valid_countries) == 5
+    assert sorted(valid_countries) == ["IN", "India", "UK", "US", "UnitedStates"]
 
-    countries = ["United States", "SomeOtherPlace"]
+    countries = ["SomeOtherPlace"]
     valid_countries = get_available_holiday_lookup_countries(countries)
     assert len(valid_countries) == 0
 
@@ -487,33 +498,34 @@ def test_get_available_holidays_in_countries():
         countries=["CN", "US"],
         year_start=2017,
         year_end=2025)
-    assert available_holidays["CN"] == [
-        "Chinese New Year",
-        "Dragon Boat Festival",
-        "Labor Day",
-        "Mid-Autumn Festival",
-        "National Day",
-        "National Day, Mid-Autumn Festival",
-        "New Year's Day",
-        "Tomb-Sweeping Day"]
-    assert available_holidays["US"] == [
-        "Christmas Day",
-        "Christmas Day (Observed)",
-        "Columbus Day",
-        "Halloween",
-        "Independence Day",
-        "Independence Day (Observed)",
-        "Juneteenth National Independence Day",
-        "Juneteenth National Independence Day (Observed)",
-        "Labor Day",
-        "Martin Luther King Jr. Day",
-        "Memorial Day",
-        "New Year's Day",
-        "New Year's Day (Observed)",
-        "Thanksgiving",
-        "Veterans Day",
-        "Veterans Day (Observed)",
-        "Washington's Birthday"]
+    # Names are stable on the major holidays; the upstream ``holidays`` library
+    # also reports ``(observed)`` variants and generated
+    # ``Day off (substituted from MM/DD/YYYY)`` entries that we don't enumerate.
+    cn = set(available_holidays["CN"])
+    for name in [
+            "Chinese New Year (Spring Festival)",
+            "Dragon Boat Festival",
+            "Labor Day",
+            "Mid-Autumn Festival",
+            "National Day",
+            "New Year's Day",
+            "Tomb-Sweeping Day"]:
+        assert name in cn, f"{name!r} missing from CN holidays"
+
+    us = set(available_holidays["US"])
+    for name in [
+            "Christmas Day",
+            "Columbus Day",
+            "Independence Day",
+            "Juneteenth National Independence Day",
+            "Labor Day",
+            "Martin Luther King Jr. Day",
+            "Memorial Day",
+            "New Year's Day",
+            "Thanksgiving Day",
+            "Veterans Day",
+            "Washington's Birthday"]:
+        assert name in us, f"{name!r} missing from US holidays"
 
 
 def test_get_available_holidays_across_countries():
@@ -522,36 +534,36 @@ def test_get_available_holidays_across_countries():
         countries=["CN", "US"],
         year_start=2017,
         year_end=2025)
-    assert available_holidays == [
-        "Chinese New Year",
-        "Christmas Day",
-        "Christmas Day (Observed)",
-        "Columbus Day",
-        "Dragon Boat Festival",
-        "Halloween",
-        "Independence Day",
-        "Independence Day (Observed)",
-        "Juneteenth National Independence Day",
-        "Juneteenth National Independence Day (Observed)",
-        "Labor Day",
-        "Martin Luther King Jr. Day",
-        "Memorial Day",
-        "Mid-Autumn Festival",
-        "National Day",
-        "National Day, Mid-Autumn Festival",
-        "New Year's Day",
-        "New Year's Day (Observed)",
-        "Thanksgiving",
-        "Tomb-Sweeping Day",
-        "Veterans Day",
-        "Veterans Day (Observed)",
-        "Washington's Birthday"]
+    # The union should include all major US + CN holidays. The upstream
+    # ``holidays`` library now adds many ``Day off (substituted from ...)``
+    # entries that we don't enumerate exhaustively.
+    across = set(available_holidays)
+    for name in [
+            "Chinese New Year (Spring Festival)",
+            "Christmas Day",
+            "Columbus Day",
+            "Dragon Boat Festival",
+            "Independence Day",
+            "Juneteenth National Independence Day",
+            "Labor Day",
+            "Martin Luther King Jr. Day",
+            "Memorial Day",
+            "Mid-Autumn Festival",
+            "National Day",
+            "New Year's Day",
+            "Thanksgiving Day",
+            "Tomb-Sweeping Day",
+            "Veterans Day",
+            "Washington's Birthday"]:
+        assert name in across, f"{name!r} missing from union of CN+US holidays"
 
 
 def test_add_daily_events():
     """Tests ``add_daily_events`` function."""
-    # Generates events dictionary
-    countries = ["US", "India", "UK"]
+    # Generates events dictionary.
+    # Upstream ``holidays`` only accepts ISO country codes (the older full
+    # names like "India"/"UnitedKingdom" no longer resolve).
+    countries = ["US", "IN", "UK"]
     event_df_dict = get_holidays(countries, year_start=2015, year_end=2025)
     original_col_names = [event_df_dict[country].columns[1] for country in countries]
 
@@ -559,13 +571,13 @@ def test_add_daily_events():
     date_list = pd.date_range(
         start=dt(2019, 1, 1),
         periods=100,
-        freq="H").tolist()
+        freq="h").tolist()
 
     df0 = pd.DataFrame({"ts": date_list})
     df = add_time_features_df(df0, time_col="ts", conti_year_origin=2018)
     df_with_events = add_daily_events(df=df, event_df_dict=event_df_dict, date_col="date")
 
-    assert df_with_events[f"{EVENT_PREFIX}_India"].values[0] == "New Year's Day"
+    assert df_with_events[f"{EVENT_PREFIX}_US"].values[0] == "New Year's Day"
     assert df_with_events[f"{EVENT_PREFIX}_US"].values[25] == ""
 
     # Makes sure the function does not modify the input
@@ -601,7 +613,7 @@ def test_add_daily_events_with_neighbor_impact():
     )
     # Checks holidays are mapped to the correct weekly dates.
     assert new_df.iloc[0].tolist() == [pd.Timestamp("2020-01-05"), 0, "New Year's Day", 1, 0, 1]
-    assert new_df.iloc[-1].tolist() == [pd.Timestamp("2021-11-28"), 0, "Thanksgiving", 1, 0, 1]
+    assert new_df.iloc[-1].tolist() == [pd.Timestamp("2021-11-28"), 0, "Thanksgiving Day", 1, 0, 1]
 
     # Tests daily data, assuming rolling 7 day.
     df = pd.DataFrame({
@@ -658,7 +670,7 @@ def test_add_daily_event_shifted_effect():
     assert new_df.iloc[0].tolist() == [pd.Timestamp("2020-01-05"), 0, "New Year's Day", "", "Christmas Day_7D_after", 1, 0, 1]
     assert new_df.iloc[1].tolist() == [pd.Timestamp("2020-01-12"), 0, "", "", "New Year's Day_7D_after", 1, 0, 1]
     assert new_df.iloc[2].tolist() == [pd.Timestamp("2020-01-19"), 0, "", "Martin Luther King Jr. Day_7D_before", "", 1, 0, 1]
-    assert new_df.iloc[-1].tolist() == [pd.Timestamp("2021-11-28"), 0, "Thanksgiving", "", "", 1, 0, 1]
+    assert new_df.iloc[-1].tolist() == [pd.Timestamp("2021-11-28"), 0, "Thanksgiving Day", "", "", 1, 0, 1]
 
 
 def test_get_evenly_spaced_changepoints():

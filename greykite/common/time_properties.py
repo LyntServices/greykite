@@ -378,7 +378,7 @@ def get_canonical_data(
         df = df.tz_localize(tz)
 
     # Replaces infinity values in `value_col` by `np.nan`
-    df[value_col].replace([np.inf, -np.inf], np.nan, inplace=True)
+    df[value_col] = df[value_col].replace([np.inf, -np.inf], np.nan)
 
     # Saves values before adjustment.
     df_original_value_col = df.copy()
